@@ -1,8 +1,11 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-empty */
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { products as prdss } from "../assets/assets";
+import { products as pdts } from "../assets/assets";
 
 export const ShopContext = createContext();
 
@@ -13,7 +16,7 @@ const ShopContextProvider = (props) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
-  const [products, setProducts] = useState(prdss);
+  const [products, setProducts] = useState([]);
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
@@ -23,19 +26,19 @@ const ShopContextProvider = (props) => {
       return;
     }
 
-    let cartData = structuredClone(cartItems);
+    let carData = structuredClone(cartItems);
 
-    if (cartData[itemId]) {
-      if (cartData[itemId][size]) {
-        cartData[itemId][size] += 1;
+    if (carData[itemId]) {
+      if (carData[itemId][size]) {
+        carData[itemId][size] += 1;
       } else {
-        cartData[itemId][size] = 1;
+        carData[itemId][size] = 1;
       }
     } else {
-      cartData[itemId] = {};
-      cartData[itemId][size] = 1;
+      carData[itemId] = {};
+      carData[itemId][size] = 1;
     }
-    setCartItems(cartData);
+    setCartItems(carData);
 
     if (token) {
       try {
@@ -59,20 +62,18 @@ const ShopContextProvider = (props) => {
           if (cartItems[items][item] > 0) {
             totalCount += cartItems[items][item];
           }
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       }
     }
     return totalCount;
   };
 
   const updateQuantity = async (itemId, size, quantity) => {
-    let cartData = structuredClone(cartItems);
+    let carData = structuredClone(cartItems);
 
-    cartData[itemId][size] = quantity;
+    carData[itemId][size] = quantity;
 
-    setCartItems(cartData);
+    setCartItems(carData);
 
     if (token) {
       try {
@@ -97,9 +98,7 @@ const ShopContextProvider = (props) => {
           if (cartItems[items][item] > 0) {
             totalAmount += itemInfo.price * cartItems[items][item];
           }
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       }
     }
     return totalAmount;
@@ -107,13 +106,13 @@ const ShopContextProvider = (props) => {
 
   const getProductsData = async () => {
     try {
-      //   const response = await axios.get(backendUrl + "/api/product/list");
-      //   if (response.data.success) {
-      //     setProducts(response.data.products.reverse());
-      //   } else {
-      //     toast.error(response.data.message);
-      //   }
-      setProducts(prdss);
+      // const response = await axios.get(backendUrl + "/api/product/list");
+      // if (response.data.success) {
+      //   setProducts(response.data.products.reverse());
+      // } else {
+      //   toast.error(response.data.message);
+      // }
+      setProducts(pdts);
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -128,7 +127,7 @@ const ShopContextProvider = (props) => {
         { headers: { token } }
       );
       if (response.data.success) {
-        setCartItems(response.data.cartData);
+        setCartItems(response.data.carData);
       }
     } catch (error) {
       console.log(error);
